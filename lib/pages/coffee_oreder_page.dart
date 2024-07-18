@@ -1,19 +1,28 @@
+import 'package:coffee_shop/components/my_button.dart';
 import 'package:coffee_shop/components/my_chip.dart';
 import 'package:coffee_shop/const.dart';
 import 'package:coffee_shop/model/coffee.dart';
+import 'package:coffee_shop/model/coffee_shop.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:confetti/confetti.dart';
 
-class CoffeeOrederPage extends StatefulWidget{
+class CoffeeOrderPage extends StatefulWidget{
   final Coffee coffee;
-  CoffeeOrederPage({required this.coffee});
+  CoffeeOrderPage({required this.coffee});
 
-  State<CoffeeOrederPage> createState() => _CoffeeOrederPageState();
+  State<CoffeeOrderPage> createState() => _CoffeeOrderPageState();
 }
 
-class _CoffeeOrederPageState extends State<CoffeeOrederPage>{
+class _CoffeeOrderPageState extends State<CoffeeOrderPage>{
   int quantity = 1;
+  late ConfettiController _confettiController;
+
+  void initState(){
+    super.initState();
+    _confettiController = ConfettiController(duration: Duration(seconds: 3));
+  }
+
   final List<bool> _sizeSelection = [true, false, false];
 
   void selectSize(String size) {
@@ -22,6 +31,33 @@ class _CoffeeOrederPageState extends State<CoffeeOrederPage>{
       _sizeSelection[1] = size == "M";
       _sizeSelection[2] = size == "L";
     });
+  }
+
+  void addToCart(){
+    if(quantity > 0){
+      Provider.of<CoffeeShop>(context, listen: false).addToCart(widget.coffee, quantity);
+      _confettiController.play();
+      showDialog(
+        context: context, 
+        builder: (context) => AlertDialog(
+          backgroundColor: Colors.brown,
+          title: Text("Successfuly added to cart",
+            style: TextStyle(color: Colors.white),
+          ),
+          actions: [
+            TextButton(
+              onPressed: (){
+                Navigator.pop(context);
+                Navigator.pop(context, true);
+              }, 
+              child: Text("OK",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   void increment(){
@@ -122,8 +158,27 @@ class _CoffeeOrederPageState extends State<CoffeeOrederPage>{
                       ),
                     ],
                   ),
+                  SizedBox(height: 75),
+                  MyButton(text: "Add to cart", onTap: addToCart),
                 ],
               ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: ConfettiWidget(
+              confettiController: _confettiController,
+              blastDirectionality: BlastDirectionality.explosive,
+              shouldLoop: false,
+              colors: [
+                const Color.fromARGB(255, 161, 18, 8),
+                const Color.fromARGB(255, 40, 130, 203),
+                Colors.grey,
+                Color.fromARGB(255, 149, 143, 26),
+                Colors.purple,
+                Colors.pink,
+                Colors.brown,
+              ],
             ),
           ),
         ],

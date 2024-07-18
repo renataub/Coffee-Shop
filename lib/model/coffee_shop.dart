@@ -24,9 +24,11 @@ class CoffeeShop extends ChangeNotifier{
       imagePath: "lib/images/iced_coffee.png",
     ),
   ];
+
   List<Coffee> get coffeeShop => _shop;
   List<Coffee> _cart = [];
   List<Coffee> get cart => _cart;
+  
   void addToCart(Coffee coffee, int quantity) {
     coffee.quantity = quantity;
     _cart.add(coffee);

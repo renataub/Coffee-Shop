@@ -1,6 +1,7 @@
 import 'package:coffee_shop/components/bottom_nav_bar.dart';
 import 'package:coffee_shop/components/coffee_tile.dart';
 import 'package:coffee_shop/const.dart';
+import 'package:coffee_shop/pages/cart_page.dart';
 import 'package:coffee_shop/pages/shop_page.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +19,11 @@ class _HomePageState extends State<HomePage> {
       _selectedIndex = index;
     });
   }
+
+  final List _pages =[
+    ShopPage(),
+    CartPage(),
+  ];
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,7 +104,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: ShopPage(),
+      body: _pages[_selectedIndex],
     );
   }
 }

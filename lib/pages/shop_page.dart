@@ -15,7 +15,7 @@ class _ShopPageState extends State<ShopPage>{
     Navigator.push(
       context, 
       MaterialPageRoute(
-        builder: (context) => CoffeeOrederPage(coffee: coffee)
+        builder: (context) => CoffeeOrderPage(coffee: coffee)
       ),
     );
   }
