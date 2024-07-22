@@ -1,6 +1,6 @@
 import 'package:coffee_shop/const.dart';
 import 'package:flutter/material.dart';
-import 'home_page.dart';
+import 'login_page.dart';
 
 class IntroScreen extends StatelessWidget{
   Widget build(BuildContext context){
@@ -26,7 +26,7 @@ class IntroScreen extends StatelessWidget{
             GestureDetector(
               onTap: () => Navigator.push(
                 context, 
-                MaterialPageRoute(builder: (context) => HomePage())
+                MaterialPageRoute(builder: (context) => LoginPage())
               ),
               child: Container(
                 padding: EdgeInsets.all(25),

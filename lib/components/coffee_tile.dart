@@ -1,6 +1,8 @@
 import 'package:coffee_shop/model/coffee.dart';
 import 'package:flutter/material.dart';
 
+import '../model/coffee_shop.dart';
+
 class CoffeeTile extends StatelessWidget{
   final Coffee coffee;
   final void Function()? onPressed;

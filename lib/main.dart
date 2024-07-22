@@ -1,9 +1,15 @@
+import 'package:coffee_shop/firebase_option.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'model/coffee_shop.dart';
 import 'pages/intro_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultafirebaseOptions.currentPlatform);
+  final storage = FirebaseStorage.instance;
   runApp(MyApp());
 }
 

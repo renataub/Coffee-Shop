@@ -2,13 +2,12 @@ import 'package:coffee_shop/const.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:provider/provider.dart';
-
 import '../components/my_button.dart';
 import '../model/coffee_shop.dart';
 
 class PaymentPage extends StatefulWidget{
-  final VoidCallback onPaymentSuccess;
-  PaymentPage({required this.onPaymentSuccess});
+  // final VoidCallback onPaymentSuccess;
+  // PaymentPage({required this.onPaymentSuccess});
 
   State<PaymentPage> createState() => _PaymentPageState();
 }

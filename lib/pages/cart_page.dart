@@ -76,10 +76,9 @@
 import 'package:coffee_shop/pages/payment_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../components/coffee_tile.dart';
+// import '../components/coffee_tile.dart';
 import '../components/my_button.dart';
 import '../const.dart';
-import '../model/coffee.dart';
 import '../model/coffee_shop.dart';
 
 class CartPage extends StatefulWidget {
