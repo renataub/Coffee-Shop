@@ -15,14 +15,12 @@
 //   File? _imageFile;
 //   final ImagePicker _picker = ImagePicker();
 
-//   @override
 //   void dispose() {
 //     _nameController.dispose();
 //     _priceController.dispose();
 //     super.dispose();
 //   }
 
-//   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
 //       appBar: AppBar(

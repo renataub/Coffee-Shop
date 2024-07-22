@@ -4,7 +4,6 @@ import 'package:coffee_shop/const.dart';
 import 'package:coffee_shop/pages/cart_page.dart';
 import 'package:coffee_shop/pages/shop_page.dart';
 import 'package:flutter/material.dart';
-
 import 'about_page.dart';
 import 'manager_page.dart';
 
