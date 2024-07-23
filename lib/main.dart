@@ -9,7 +9,6 @@ import 'pages/intro_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  final storage = FirebaseStorage.instance;
   runApp(MyApp());
 }
 

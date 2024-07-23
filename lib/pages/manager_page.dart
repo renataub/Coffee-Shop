@@ -1,127 +1,120 @@
-// import 'dart:io';
-// import 'package:flutter/material.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'package:provider/provider.dart'; // Import Provider package
-// import '../model/coffee_shop.dart';
+import 'package:coffee_shop/model/coffee.dart';
+import 'package:coffee_shop/model/coffee_shop.dart';
+import 'package:coffee_shop/services/product_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
-// class ManagerPage extends StatefulWidget {
-//   @override
-//   _CoffeeManagerScreenState createState() => _CoffeeManagerScreenState();
-// }
+class ManagerPage extends StatefulWidget{
+  State<ManagerPage> createState() => _ManagerPageState();
+}
 
-// class _CoffeeManagerScreenState extends State<ManagerPage> {
-//   final TextEditingController _nameController = TextEditingController();
-//   final TextEditingController _priceController = TextEditingController();
-//   File? _imageFile;
-//   final ImagePicker _picker = ImagePicker();
+class _ManagerPageState extends State<ManagerPage>{
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _priceController = TextEditingController();
+  TextEditingController _imagePathController = TextEditingController(text: "lib/images/");
+  final ProductService _productService = ProductService(); 
 
-//   void dispose() {
-//     _nameController.dispose();
-//     _priceController.dispose();
-//     super.dispose();
-//   }
+  Widget build(BuildContext context){
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Manager Products"),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            TextField(
+              controller: _nameController,
+              decoration: InputDecoration(labelText: "Product Name"),
+            ),
+            TextField(
+              controller: _priceController,
+              decoration: InputDecoration(labelText: "Product Price"),
+            ),
+            TextField(
+              controller: _imagePathController,
+              decoration: InputDecoration(labelText: "Image Path"),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: (){
+                _addProduct();
+              },
+              child: Text("Add Product"),
+            ),
+            SizedBox(height: 20),
+            Expanded(
+              child: _buildProductList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Coffee Manager'),
-//       ),
-//       body: Padding(
-//         padding: EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: <Widget>[
-//             Text('Add New Product:'),
-//             SizedBox(height: 10.0),
-//             TextField(
-//               controller: _nameController,
-//               decoration: InputDecoration(
-//                 labelText: 'Product Name',
-//                 border: OutlineInputBorder(),
-//               ),
-//             ),
-//             SizedBox(height: 10.0),
-//             TextField(
-//               controller: _priceController,
-//               keyboardType: TextInputType.numberWithOptions(decimal: true),
-//               decoration: InputDecoration(
-//                 labelText: 'Price (\$)',
-//                 border: OutlineInputBorder(),
-//               ),
-//             ),
-//             SizedBox(height: 10.0),
-//             _imageFile != null
-//                 ? Image.file(
-//                     _imageFile!,
-//                     height: 100.0,
-//                   )
-//                 : ElevatedButton(
-//                     onPressed: () {
-//                       _pickImage();
-//                     },
-//                     child: Text('Pick Image'),
-//                   ),
-//             SizedBox(height: 20.0),
-//             ElevatedButton(
-//               onPressed: () {
-//                 _addProductToShop(context);
-//               },
-//               child: Text('Add Product'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
+  Widget _buildProductList() {
+    return StreamBuilder<List<Coffee>>(
+      stream: _productService.getProducts(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No Products Found'));
+        }
 
-//   Future<void> _pickImage() async {
-//     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+        List<Coffee> products = snapshot.data!;
 
-//     setState(() {
-//       if (pickedFile != null) {
-//         _imageFile = File(pickedFile.path);
-//       } else {
-//         print('No image selected.');
-//       }
-//     });
-//   }
+        return ListView.builder(
+          itemCount: products.length,
+          itemBuilder: (context, index) {
+            Coffee product = products[index];
 
-//   void _addProductToShop(BuildContext context) {
-//     String name = _nameController.text.trim();
-//     double price = double.tryParse(_priceController.text.trim()) ?? 0.0;
+            return ListTile(
+              title: Text(product.name),
+              subtitle: Text('\$${product.price.toStringAsFixed(2)}'),
+              leading: Image.asset(product.imagePath, height: 50),
+              trailing: IconButton(
+                icon: Icon(Icons.delete, color: Colors.red,),
+                onPressed: () {
+                  _deleteProduct(product.id);
+                },
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
-//     // Validate input
-//     if (name.isEmpty || price <= 0 || _imageFile == null) {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         SnackBar(
-//           content: Text('Please enter valid product details and select an image.'),
-//         ),
-//       );
-//       return;
-//     }
+  void _addProduct(){
+    final name = _nameController.text.trim();
+    final price = double.parse(_priceController.text.trim());
+    final imagePath = _imagePathController.text.trim();
 
-//     // Create a new Coffee object
-//     Coffee newCoffee = Coffee(
-//       id: '',
-//       name: name,
-//       price: price,
-//       imagePath: '', // Placeholder, will be updated after image upload
-//     );
+    if(name.isNotEmpty && price > 0 && imagePath.isNotEmpty){
+      Coffee newCoffee = Coffee(name: name, price: price, imagePath: imagePath);
+      _productService.addProduct(newCoffee);
+    } else{
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Please enter valid products details"),
+        backgroundColor: Colors.red,
+      ));
+    }
+    
+  }
 
-//     // Access the CoffeeShop model using Provider
-//     Provider.of<CoffeeShop>(context, listen: false).addNewCoffee(newCoffee, _imageFile!.path);
+  void _deleteProduct(String? productId) {
+    if (productId != null) {
+      _productService.deleteProduct(productId);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Product ID is null, cannot delete product"),
+        backgroundColor: Colors.red,
+      ));
+    }
+  }
 
-//     // Clear text fields and image file after adding
-//     _nameController.clear();
-//     _priceController.clear();
-//     setState(() {
-//       _imageFile = null;
-//     });
-
-//     ScaffoldMessenger.of(context).showSnackBar(
-//       SnackBar(
-//         content: Text('Product added to shop successfully!'),
-//       ),
-//     );
-//   }
-// }
+}

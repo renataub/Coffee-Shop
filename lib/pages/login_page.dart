@@ -1,285 +1,3 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:coffee_shop/components/my_button.dart';
-// import 'package:coffee_shop/const.dart';
-// import 'package:coffee_shop/services/email_service.dart';
-// import 'package:flutter/material.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'home_page.dart';
-
-// class LoginPage extends StatefulWidget{
-//   State<LoginPage> createState() => _LoginPageState();
-// }
-
-// class _LoginPageState extends State<LoginPage>{
-//   final emailController = TextEditingController();
-//   final codeController = TextEditingController();
-//   // final verificationCodeController = TextEditingController();
-
-//   final emailService = EmailService();
-//   // bool isSendingCode = false;
-//   // bool isVerifyingCode = false;
-//   // bool isSigningIn = false;
-
-//   String? _verificationCode;
-
-//   void signInWithEmailCode() async {
-//   //   setState(() {
-//   //     isSigningIn = true;
-//   //   });
-
-//   //   try{
-//   //     await emailService.loginWithEmailPassword(
-//   //       emailController.text.trim(),
-//   //       codeController.text.trim(),
-//   //     );
-//   //   }catch(e) {}
-
-//     String email = emailController.text.trim();
-//     String code = codeController.text.trim();
-
-//     if (code == _verificationCode) {
-//       User? user = await _checkUserExists(email);
-
-//       if (user == null) {
-//         await _registerUser(email);
-//       }
-
-//       Navigator.pushReplacement(
-//         context,
-//         MaterialPageRoute(builder: (context) => HomePage()),
-//       );
-//     } else {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         SnackBar(content: Text('Verification code is incorrect.')),
-//       );
-//     }
-//   }
-
-//   Future<void> _sendVerificationCode() async {
-//     String email = emailController.text.trim();
-//     _verificationCode = emailService.generateVerificationCode();
-
-//     print('Send Verification Code button clicked');
-//     print('Verification code: $_verificationCode');
-
-//     await emailService.sendVerificationCode(email, _verificationCode!);
-
-//     ScaffoldMessenger.of(context).showSnackBar(
-//       SnackBar(content: Text('Verification code sent to $email.')),
-//     );
-//   }
-
-//   Future<User?> _loginWithEmailPassword(String email) async {
-//     try {
-//       UserCredential userCredential =
-//           await FirebaseAuth.instance.signInWithEmailAndPassword(
-//         email: email,
-//         password: 'temporaryPassword',
-//       );
-//       return userCredential.user;
-//     } catch (e) {
-//       return null;
-//     }
-//   }
-
-//   Future<void> _registerUser(String email) async {
-//     try {
-//       UserCredential userCredential =
-//           await FirebaseAuth.instance.createUserWithEmailAndPassword(
-//         email: email,
-//         password: 'temporaryPassword',
-//       );
-//       await FirebaseFirestore.instance
-//           .collection('user')
-//           .doc(userCredential.user?.uid)
-//           .set({
-//         'email': email,
-//       });
-//     } catch (e) {
-//       print('Error registering user: $e');
-//     }
-//   }
-
-
-
-//   // String? _verificationCode;
-//   // bool isSignIn = false;
-
-//   // void _signInWithEmailCode() async {
-   
-
-//   //   setState(() {
-//   //     isSignIn = true;
-//   //   });
-
-//   //   try{
-//   //     await emailService.sendCodeToEmail(
-//   //       emailController.text.trim(), 
-//   //       // passwordController.text.trim(),
-//   //     );
-//   //     Navigator.pushReplacement(
-//   //       context, 
-//   //       MaterialPageRoute(builder: (context) => HomePage()),
-//   //     );
-//   //   } catch (e) {
-//   //     print("Error signing in: $e");
-//   //   } finally{
-//   //     setState(() {
-//   //       isSignIn = false;
-//   //     });
-//   //   }
-//   // }
-
-//   //   void _signInWithEmailAndPassword() async {
-//   //   try {
-//   //     await authService.signInWithEmailPassword(
-//   //       emailController.text.trim(),
-//   //       passwordController.text.trim(),
-//   //     );
-
-//   //     User? user = authService.getCurrentUser();
-//   //     if (user != null && user.emailVerified) {
-//   //       Example: Navigator.pushReplacement(
-//   //         context, MaterialPageRoute(builder: (context) => HomePage()),
-//   //       );
-//   //     } else {
-//   //       ScaffoldMessenger.of(context).showSnackBar(
-//   //         SnackBar(content: Text('Please verify your email first.')),
-//   //       );
-//   //     }
-//   //   } catch (e) {
-//   //     String errorMessage = authService.getErrorMessage(e.toString());
-//   //     ScaffoldMessenger.of(context).showSnackBar(
-//   //       SnackBar(content: Text(errorMessage)),
-//   //     );
-//   //   }
-//   // }
-
-//   // void _registerWithEmailAndPassword() async {
-//   //   try {
-//   //     await authService.signUpWithEmailPassword(
-//   //       emailController.text.trim(),
-//   //       passwordController.text.trim(),
-//   //     );
-
-//   //     ScaffoldMessenger.of(context).showSnackBar(
-//   //       SnackBar(content: Text('Registration successful. Please check your email for verification.')),
-//   //     );
-
-//   //   } catch (e) {
-//   //     String errorMessage = authService.getErrorMessage(e.toString());
-//   //     ScaffoldMessenger.of(context).showSnackBar(
-//   //       SnackBar(content: Text(errorMessage)),
-//   //     );
-//   //   }
-//   // }
-
-//   // void _sendVerificationEmail() async {
-//   //   try {
-//   //     await authService.sendEmailVerification();
-//   //     ScaffoldMessenger.of(context).showSnackBar(
-//   //       SnackBar(content: Text('Verification email sent. Please check your inbox.')),
-//   //     );
-//   //   } catch (e) {
-//   //     print('Error sending verification email: $e');
-//   //     ScaffoldMessenger.of(context).showSnackBar(
-//   //       SnackBar(content: Text('Failed to send verification email. Please try again later.')),
-//   //     );
-//   //   }
-//   // }
-
-  
-
-
-// import 'dart:async';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:coffee_shop/pages/home_page.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter/widgets.dart';
-// import '../services/email_service.dart';
-
-// class LoginPage extends StatefulWidget {
-//   _LoginPageState createState() => _LoginPageState();
-// }
-
-// class _LoginPageState extends State<LoginPage> {
-//   TextEditingController _emailController = TextEditingController();
-//   TextEditingController _codeController = TextEditingController();
-//   TextEditingController _phoneController = TextEditingController();
-//   String? _verificationCode;
-//   final EmailService _emailService = new EmailService();
-
-  
-
-//   void signInWithEmailCode() async {
-//     String email = _emailController.text.trim();
-//     String code = _codeController.text.trim();
-
-//     if (code == _verificationCode) {
-//       User? user = await _checkUserExists(email);
-
-//       if (user == null) {
-//         await _registerUser(email);
-//       }
-
-//       Navigator.pushReplacement(
-//         context,
-//         MaterialPageRoute(builder: (context) => HomePage()),
-//       );
-//     } else {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         SnackBar(content: Text('Verification code is incorrect.')),
-//       );
-//     }
-//   }
-
-//   Future<void> _sendVerificationCode() async {
-//     String email = _emailController.text.trim();
-//     _verificationCode = _emailService.generateVerificationCode();
-
-//     print('Send Verification Code button clicked');
-//     print('Verification code: $_verificationCode');
-
-//     await _emailService.sendVerificationEmail(email, _verificationCode!);
-
-//     ScaffoldMessenger.of(context).showSnackBar(
-//       SnackBar(content: Text('Verification code sent to $email.')),
-//     );
-//   }
-
-//   Future<User?> _checkUserExists(String email) async {
-//     try {
-//       UserCredential userCredential =
-//           await FirebaseAuth.instance.signInWithEmailAndPassword(
-//         email: email,
-//         password: 'temporaryPassword',
-//       );
-//       return userCredential.user;
-//     } catch (e) {
-//       return null;
-//     }
-//   }
-
-//   Future<void> _registerUser(String email) async {
-//     try {
-//       UserCredential userCredential =
-//           await FirebaseAuth.instance.createUserWithEmailAndPassword(
-//         email: email,
-//         password: 'temporaryPassword',
-//       );
-//       await FirebaseFirestore.instance
-//           .collection('user')
-//           .doc(userCredential.user?.uid)
-//           .set({
-//         'email': email,
-//       });
-//     } catch (e) {
-//       print('Error registering user: $e');
-//     }
-//   }
-
- 
 import 'dart:async';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -343,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomePage()),
+        MaterialPageRoute(builder: (context) => HomePage(userEmail: email,)),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -354,20 +72,31 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _registerUser(String email) async {
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: 'temporaryPassword',
-      );
-      await FirebaseFirestore.instance
-          .collection('user')
-          .doc(userCredential.user?.uid)
-          .set({
-        'email': email,
+    User? user = FirebaseAuth.instance.currentUser;
+    UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: email, 
+      password: "temporaryPassword"
+    );
+    if (user != null) {
+      await FirebaseFirestore.instance.collection('users').add({
+        'name': _emailController.text.trim(),
+        'email': _emailController.text.trim(),
+        'phone': _phoneController.text.trim(),
       });
-    } catch (e) {
-      print('Error registering user: $e');
     }
+    // try {
+    //   UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+    //     email: email,
+    //     password: 'temporaryPassword',
+    //   );
+    //   await FirebaseFirestore.instance
+    //       .collection('users')
+    //       .add({
+    //         'email': email,
+    //       });
+    // } catch (e) {
+    //   print('Error registering user: $e');
+    // }
   }
 
   String _generateVerificationCode() {
@@ -399,7 +128,6 @@ class _LoginPageState extends State<LoginPage> {
         smsCode: _codeController.text,
       );
       await FirebaseAuth.instance.signInWithCredential(credential);
-      // _checkUserExists();
     }
   }
 

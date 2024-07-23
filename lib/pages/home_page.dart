@@ -1,13 +1,16 @@
 import 'package:coffee_shop/components/bottom_nav_bar.dart';
-// import 'package:coffee_shop/components/coffee_tile.dart';
 import 'package:coffee_shop/const.dart';
 import 'package:coffee_shop/pages/cart_page.dart';
+import 'package:coffee_shop/pages/login_page.dart';
 import 'package:coffee_shop/pages/shop_page.dart';
 import 'package:flutter/material.dart';
 import 'about_page.dart';
 import 'manager_page.dart';
 
 class HomePage extends StatefulWidget{
+  final String userEmail;
+  const HomePage({required this.userEmail});
+
   State<HomePage> createState() => _HomePageState();
 }
 
@@ -62,7 +65,7 @@ class _HomePageState extends State<HomePage> {
                       Navigator.pop(context);
                       Navigator.push(
                         context, 
-                        MaterialPageRoute(builder: (context) => HomePage()),
+                        MaterialPageRoute(builder: (context) => HomePage(userEmail: widget.userEmail,)),
                       );
                     },
                     child: ListTile(
@@ -87,14 +90,14 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
+                if(widget.userEmail == "renataub2964@gmail.com")
                 GestureDetector(
                   onTap: (){
-                    _showManagerVerificationDialog(context);
-                    // Navigator.pop(context);
-                    // Navigator.push(
-                    //   context, 
-                    //   MaterialPageRoute(builder: (context) => ManagerPage()),
-                    // );
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (context) => ManagerPage()),
+                    );
                   },
                   child: Padding(
                     padding: EdgeInsets.only(left: 25),
@@ -109,6 +112,10 @@ class _HomePageState extends State<HomePage> {
             GestureDetector(
               onTap: () {
                 Navigator.pop(context);
+                Navigator.push(
+                  context, 
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
               },
               child: Padding(
                 padding: EdgeInsets.only(left: 25, bottom: 25),
@@ -125,54 +132,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-    Future<void> _showManagerVerificationDialog(BuildContext context) async {
-    String enteredEmail = '';
-    return showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Manager Verification'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('Please enter your email to verify your identity as a manager:'),
-                TextField(
-                  onChanged: (value) {
-                    enteredEmail = value.trim();
-                  },
-                  decoration: InputDecoration(labelText: 'Email'),
-                ),
-              ],
-            ),
-          ),
-          // actions: <Widget>[
-          //   TextButton(
-          //     child: Text('Verify'),
-          //     onPressed: () async{
-          //       final String managerEmail = 'g0548457103@gmail.com'; // Replace with your manager's email
-          //       if (enteredEmail == managerEmail) {
-          //         Navigator.pushReplacement(
-          //           context,
-          //           MaterialPageRoute(builder: (context) => ManagerPage()),
-          //         );
-          //       } else {
-          //         Navigator.pop(context); // Close the dialog
-          //         Navigator.push(
-          //           context, 
-          //           MaterialPageRoute(builder: (context) => HomePage()),
-          //         );
-          //         ScaffoldMessenger.of(context).showSnackBar(
-          //           SnackBar(
-          //             content: Text('Invalid manager email.'),
-          //           ),
-          //         );
-          //       }
-          //     },
-          //   ),
-          // ],
-        );
-      },
-    );
-  }
 }

@@ -35,7 +35,7 @@ class _CoffeeOrderPageState extends State<CoffeeOrderPage>{
 
   void addToCart(){
     if(quantity > 0){
-      Provider.of<CoffeeShop>(context, listen: false).addToCart(widget.coffee, quantity);
+      Provider.of<CoffeeShop>(context, listen: false).addItemToCart(widget.coffee, quantity);
       _confettiController.play();
       showDialog(
         context: context, 
