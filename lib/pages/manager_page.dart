@@ -1,9 +1,7 @@
 import 'package:coffee_shop/model/coffee.dart';
-import 'package:coffee_shop/model/coffee_shop.dart';
 import 'package:coffee_shop/services/product_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 
 class ManagerPage extends StatefulWidget{
   State<ManagerPage> createState() => _ManagerPageState();

@@ -2,12 +2,12 @@ import 'package:coffee_shop/const.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:provider/provider.dart';
-import '../components/my_button.dart';
 import '../model/coffee_shop.dart';
+import '../services/email_service.dart';
 
 class PaymentPage extends StatefulWidget{
-  // final VoidCallback onPaymentSuccess;
-  // PaymentPage({required this.onPaymentSuccess});
+  final String userEmail;
+  const PaymentPage({required this.userEmail});
 
   State<PaymentPage> createState() => _PaymentPageState();
 }
@@ -18,8 +18,9 @@ class _PaymentPageState extends State<PaymentPage> {
   String cvvCode = "";
   String cardHolderName = "";
   bool isCvvFocused = false;
-
   final GlobalKey<FormState> key = new GlobalKey<FormState>();
+  TextEditingController _emailController = TextEditingController();
+  final EmailService _emailService = new EmailService();
 
     void onCreditCardModelChange(CreditCardModel model){
     setState(() {
@@ -31,33 +32,40 @@ class _PaymentPageState extends State<PaymentPage> {
     });
   }
 
-  void onPaymentSuccess() {
-    Provider.of<CoffeeShop>(context, listen: false).clearCart();
-    
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.brown,
-        title: Text(
-          "Successfully paid",
-          style: TextStyle(color: Colors.white),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context, true);
-            },
-            child: Text(
-              "OK",
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-    );
+  void processPayment(){
+    if(key.currentState!.validate()){
+      var cartItem = Provider.of<CoffeeShop>(context, listen: false).userCart;
+      String orderDetails = cartItem.map((item) => "${item.name} x${item.quantity}").join("\n");
+      double totalprice = cartItem.fold(0, (sum, item) => sum + item.price * item.quantity);
+      String total = totalprice.toStringAsFixed(2);
+      String email = widget.userEmail.isEmpty ? _emailController.text.trim() : widget.userEmail;
+
+      _emailService.sendOrderEmail(email, orderDetails, total);
+
+      Provider.of<CoffeeShop>(context, listen: false).clearCart();
+
+      showDialog(
+        context: context, 
+        builder: (BuildContext context){
+          return AlertDialog(
+            backgroundColor: Colors.brown,
+            title: Text("Success"),
+            content: Text("Payment Successful"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                child: Text("OK"),
+              ),
+            ],
+          );
+        }
+      );
+    }
   }
-  
+ 
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -90,17 +98,16 @@ class _PaymentPageState extends State<PaymentPage> {
                       obscureCvv: true,
                       obscureNumber: true,
                     ),
-                    SizedBox(height: 75),
-                    // ElevatedButton(
-                    //   onPressed: (){
-                    //     if(key.currentState!.validate()) {
-                    //       onPaymentSuccess();
-                    //     } else {
-                    //       key.currentState.showErrorMessages();
-                    //     }
-                    //   }, 
-                    //   child: child
-                    // ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: processPayment,
+                      child: Container(
+                        margin: EdgeInsets.all(8),
+                        child: Text('Pay Now',
+                          style: TextStyle(color: Colors.black, fontSize: 18,),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

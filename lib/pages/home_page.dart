@@ -23,12 +23,17 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  final List _pages =[
-    ShopPage(),
-    CartPage(),
-  ];
+  void initState(){
+    super.initState();
+    print("userEmail: ${widget.userEmail}");
+  }
 
   Widget build(BuildContext context) {
+    final List _pages =[
+    ShopPage(),
+    CartPage(userEmail: widget.userEmail),
+  ];
+
     return Scaffold(
       backgroundColor: backgroundColor,
       bottomNavigationBar: MyBottomNavBar(onTapChange: navigateBottomBar,),

@@ -13,11 +13,12 @@ class EmailService {
       ..subject = subject
       ..text = text;
 
-    try {
+    try{
       await send(message, smtpServer);
-      print('Verification email sent');
-    } catch (e) {
-      print('Error sending email: $e');
+    } on MailerException catch(e){
+      for(var p in e.problems){
+        print("Problem: ${p.code}: ${p.msg}");
+      }
     }
   }
 
@@ -25,8 +26,8 @@ class EmailService {
     await sendEmail(email, "Verification Code", "Your Verification Code is $code");
   }
 
-  Future<void> sendOrderEmail(String email, String orderDetails, String total) async{
-    await sendEmail(email, "Your order details", "Order details:\n$orderDetails\nTotal: $total");
+  Future<void> sendOrderEmail(String email, String orderDetails, String total) async {
+    await sendEmail(email, 'Your Order Details', 'Order Details:\n$orderDetails\n\nTotal: \$$total');
   }
 
 }

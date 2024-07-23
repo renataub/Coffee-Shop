@@ -7,7 +7,9 @@ import '../model/coffee.dart';
 import '../model/coffee_shop.dart';
 
 class CartPage extends StatefulWidget {
-  @override
+  final String userEmail;
+  const CartPage({required this.userEmail});
+
   State<CartPage> createState() => _CartPageState();
 }
 
@@ -155,7 +157,7 @@ class _CartPageState extends State<CartPage> {
             MyButton(text: 'Pay now', onTap: () {
               Navigator.push(
                 context, 
-                MaterialPageRoute(builder: (context) => PaymentPage()),
+                MaterialPageRoute(builder: (context) => PaymentPage(userEmail: widget.userEmail,)),
               );
             }),
           ],
